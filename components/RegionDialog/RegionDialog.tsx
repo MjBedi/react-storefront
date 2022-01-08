@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useClickAway } from "react-use";
 
 import { clearCheckout } from "@/lib/checkout";
 import { LOCALES } from "@/lib/regions";
@@ -20,6 +21,12 @@ export interface RegionFormData {
 
 export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
   const router = useRouter();
+
+  const modalRef = React.useRef<HTMLDivElement>(null);
+  useClickAway(modalRef, () => {
+    onClose();
+  });
+
   const { channels, currentChannel, setCurrentChannel, currentLocale } =
     useRegions();
   const { register: register, handleSubmit: handleSubmit } =
@@ -57,7 +64,7 @@ export const RegionDialog = ({ isOpen, onClose }: RegionDialogProps) => {
       id="modal-id"
     >
       <div className="absolute bg-black opacity-50 inset-0 z-0"></div>
-      <div className="w-full  max-w-lg pb-6 relative mx-auto my-auto rounded-sm shadow-lg flex flex-col items-center bg-white ">
+      <div ref={modalRef} className="w-full  max-w-lg pb-6 relative mx-auto my-auto rounded-sm shadow-lg flex flex-col items-center bg-white ">
         <div className="text-center p-5 mt-4 flex-auto justify-center">
           <h2 className="text-2xl font-bold py-4">Choose your region</h2>
         </div>

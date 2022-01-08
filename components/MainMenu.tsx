@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Link from "next/link";
 import React from "react";
+import { useClickAway } from "react-use";
 
 import { translate } from "@/lib/translations";
 import { notNullable } from "@/lib/util";
@@ -13,12 +14,17 @@ import { useRegions } from "./RegionsProvider";
 export const MainMenu = () => {
   const paths = usePaths();
   const { query } = useRegions();
+  const menuRef = React.useRef<HTMLDivElement>(null);
 
   const { loading, error, data } = useMainMenuQuery({
     variables: { ...query },
   });
 
   const [openDropdown, setOpenDropdown] = React.useState<boolean>(false);
+
+  useClickAway(menuRef, () => {
+    setOpenDropdown(false);
+    });
 
   if (loading)
     return (
@@ -55,7 +61,7 @@ export const MainMenu = () => {
         active={openDropdown}
         onClick={(ev: MouseEvent) => onClickButton(ev)}
       />
-      <div
+      <div ref={menuRef}
         className={clsx(
           "z-40 dropdown-menu transition-all duration-300 transform origin-top-left -translate-y-2 scale-95",
           openDropdown && "visible",
